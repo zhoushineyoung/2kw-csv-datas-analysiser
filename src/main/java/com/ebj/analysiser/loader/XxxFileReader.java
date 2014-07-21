@@ -47,7 +47,7 @@ public class XxxFileReader {
 		for (String[] strings : object) {
 			String tmpString = Joiner.on(",").join(strings);
 			String str=new String(tmpString.getBytes("UTF-8"),"UTF-8");	
-			System.out.println(tmpString);
+			System.out.println(strings.length + " -> " + tmpString);
 			
 		}
 		Arrays.asList(object); 
