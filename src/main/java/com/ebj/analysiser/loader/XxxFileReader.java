@@ -46,11 +46,12 @@ public class XxxFileReader {
 		String[][] object = getDatasetByFolderName("grogersinfo");
 		for (String[] strings : object) {
 			String tmpString = Joiner.on(",").join(strings);
-			String str=new String(tmpString.getBytes("UTF-8"),"UTF-8");	
-			System.out.println(strings.length + " -> " + tmpString);
+			String str = new String(tmpString.getBytes("UTF-8"), "UTF-8");	
+			System.out.println(strings.length + " -> " + str);
 			
 		}
-		Arrays.asList(object); 
+		List<String[]> lines = Arrays.asList(object);
+		
 	}
     
 	public static ArrayList<String[]> initCSVTestData() {
@@ -135,7 +136,7 @@ public class XxxFileReader {
 		}
 		
 		try {
-			InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file),"UTF-8");
+			InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file),"GBK");
 		    BufferedReader bufferedReader=new BufferedReader(inputStreamReader);
 			//BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
 			String line = null;
@@ -177,10 +178,7 @@ public class XxxFileReader {
 		}
 		
 		try {
-			FileReader reader = new FileReader(file);
-			// CSVReader csvReader = new CSVReader(reader);
-			// BufferedReader bufferedReader = new BufferedReader(reader);
-			InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file),"UTF-8");
+			InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file),"GBK");
 		    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 			CSVReader csvReader = new CSVReader(bufferedReader);
 			String[] csvLine = null;
@@ -195,7 +193,52 @@ public class XxxFileReader {
 			}
 			// 剔除第一行标题信息 
 			itemList.remove(0);
-			reader.close();
+			inputStreamReader.close();
+			bufferedReader.close();
+			csvReader.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		if (itemList.size() > 0) {
+			dataset = new String[itemList.size()][_size];
+			for (int i = 0; i < itemList.size(); i++) {
+				dataset[i] = itemList.get(i);
+			}
+			// return dataset;
+		}
+		return dataset;
+	}
+	
+	private static String[][] readCSVFile3(File file) {
+		List<String[]> itemList = new ArrayList<String[]>();
+		String[][] dataset = null;
+		int _size = 0;
+		
+		if (file == null || file.isDirectory()) {
+			return null;
+		}
+		
+		try {
+			InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file),"GBK");
+			BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+			CSVReader csvReader = new CSVReader(bufferedReader);
+			
+			String[] csvLine = null;
+			while ((csvLine = csvReader.readNext()) != null) {
+				if (Joiner.on(",").join(csvLine).startsWith(IGNORE_TAG)) {
+					continue;
+				}
+				itemList.add(csvLine);
+				if (_size != csvLine.length) {
+					_size = csvLine.length;
+				}
+			}
+			// 剔除第一行标题信息 
+			itemList.remove(0);
+			inputStreamReader.close();
+			bufferedReader.close();
 			csvReader.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
