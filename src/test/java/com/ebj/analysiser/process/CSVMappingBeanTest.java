@@ -41,7 +41,7 @@ public class CSVMappingBeanTest {
 	}
 
 	@Test
-	public void testGetReader() {
+	public void testGetCSVReader() {
 		assertTrue(true);
 	}
 
