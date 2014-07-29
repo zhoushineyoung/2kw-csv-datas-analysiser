@@ -19,22 +19,23 @@ import au.com.bytecode.opencsv.bean.MappingStrategy;
  *
  * @param <T>
  */
-public class CSVMapingBean<T> {
-	public static <T> MappingStrategy<T> getStrategy(T t) {
+public class CSVMappingBean<T> {
+	public <T> MappingStrategy<T> getStrategy(T t) {
 		HeaderColumnNameTranslateMappingStrategy<T> strategy = new HeaderColumnNameTranslateMappingStrategy<T>();
         strategy.setType((Class<T>) t);
         return strategy;
 	}
 	
-	public static Map<String, String> getMapping(String string) {
+	public Map<String, String> getMapping(String string) {
 		Map<String, String> pairs = new HashMap<String, String>();
 		if (!Strings.isNullOrEmpty(string)) {
+			System.out.println(string);
 			pairs = Splitter.on(",").withKeyValueSeparator(":").split(string);
 		}
 		return pairs;
 	}
 	
-	public static CSVReader getReader(String fileName) {
+	public CSVReader getReader(String fileName) {
 		// String csvFilename = "C:\\sample2.csv";
 		String csvFilename = fileName;
         CSVReader reader = null;
@@ -46,7 +47,7 @@ public class CSVMapingBean<T> {
         return reader;
 	}
 	
-	public static <T> List<T> name(T t, String fileName) {
+	public <T> List<T> parse2List(T t, String fileName) {
 		List<T> list = null;
 		CsvToBean<T> csvToBean = new CsvToBean<T>();
 		list = csvToBean.parse(getStrategy(t), getReader(fileName));
